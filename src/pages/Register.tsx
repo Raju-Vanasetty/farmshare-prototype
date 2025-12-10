@@ -66,9 +66,22 @@ const Register = () => {
         navigate(`/dashboard/${role}`);
       }
     } catch (error: any) {
+      let errorMessage = error.message;
+      
+      // Handle common auth errors with user-friendly messages
+      if (error.message?.includes('User already registered') || error.message?.includes('already exists')) {
+        errorMessage = 'This email is already registered. Please login instead.';
+      } else if (error.message?.includes('Failed to fetch')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (error.message?.includes('Invalid email')) {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (error.message?.includes('Password')) {
+        errorMessage = 'Password must be at least 6 characters long.';
+      }
+      
       toast({
         title: 'Registration failed',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {

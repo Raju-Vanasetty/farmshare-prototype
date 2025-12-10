@@ -42,9 +42,19 @@ const Login = () => {
       const role = roleData?.role || 'user';
       navigate(`/dashboard/${role}`);
     } catch (error: any) {
+      let errorMessage = error.message;
+      
+      if (error.message?.includes('Invalid login credentials')) {
+        errorMessage = 'Invalid email or password. Please try again.';
+      } else if (error.message?.includes('Failed to fetch')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (error.message?.includes('Email not confirmed')) {
+        errorMessage = 'Please verify your email before logging in.';
+      }
+      
       toast({
         title: 'Login failed',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
